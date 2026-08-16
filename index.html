@@ -13,7 +13,6 @@ body{
   min-height:100vh;
   overflow-x:hidden;
   position:relative;
-  /* 四层径向渐变星空背景 */
   background:
     radial-gradient(circle at 10% 20%, rgba(103, 232, 249, 0.12) 0%, transparent 40%),
     radial-gradient(circle at 90% 80%, rgba(165, 180, 252, 0.14) 0%, transparent 45%),
@@ -52,7 +51,7 @@ body{
   position:relative;z:1;
   max-width:860px;margin:0 auto;padding:24px 16px 40px;
 }
-/* 顶部全局渐变扫光进度条 */
+/* 顶部全局进度条 */
 .top-progress-bar{
   position:fixed;top:0;left:0;width:100%;height:3px;
   background:#1e293b;overflow:hidden;z:999;
@@ -99,7 +98,7 @@ body{
   content:"";position:absolute;top:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,#67e8f9,transparent);
 }
-/* 月相环形进度（右上角辅助） */
+/* 月相环形进度 */
 .moon-progress{
   position:absolute;top:26px;right:26px;width:56px;height:56px;
   border-radius:50%;background:#1e293b;display:grid;place-items:center;
@@ -190,7 +189,7 @@ button{
 .btn-next:hover::after{left:100%;}
 .btn-next:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
 
-/* ====================== 【新版报告样式 对标截图】 ====================== */
+/* ====================== 报告结果页面 ====================== */
 .result-wrap{display:none;margin-top:20px;}
 .report-page{
   width:100%;
@@ -256,7 +255,10 @@ button{
 }
 /* 双栏优势&小特质 */
 .two-col{
-  display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;
+  display:grid;grid-template-columns:1fr;gap:16px;margin-top:24px;
+}
+@media(min-width:640px){
+  .two-col{grid-template-columns:1fr 1fr;}
 }
 .col-card{
   background:rgba(45,60,92,0.25);
@@ -274,23 +276,44 @@ button{
   padding:6px 12px;
   font-size:13px;margin:4px 6px 4px 0;
 }
+/* 底部限定头像卡片 */
+.avatar-award-card{
+  background:rgba(45,60,92,0.25);
+  border:1px solid rgba(103,232,249,0.25);
+  border-radius:14px;padding:22px;text-align:center;margin-top:24px;
+}
+.avatar-award-card h3{
+  font-size:18px;margin-bottom:8px;color:#f1f5f9;
+}
+.avatar-award-card p{
+  font-size:14px;color:#94a3b8;margin-bottom:16px;
+}
+.avatar-award-card .avatar-preview{
+  width:90px;height:90px;border-radius:50%;object-fit:cover;margin:0 auto 16px;
+  background:conic-gradient(#67e8f9,#5eead4,#a5b4fc,#67e8f9);
+  padding:3px;animation:rotate-glow 6s linear infinite;
+}
 .download-avatar{
-  margin:28px 0 12px 0;padding:11px 22px;border-radius:12px;
+  padding:11px 22px;border-radius:12px;
   background:rgba(103,232,249,0.2);color:#67e8f9;border:1px solid #67e8f9;
   cursor:pointer;font-size:14px;
 }
 .back-test{width:100%;margin-top:12px;}
 
-/* 呼吸脉冲动画（引导/徽章） */
+/* 呼吸脉冲动画 */
 @keyframes pulse-glow{
   0%,100{box-shadow:0 0 8px rgba(103,232,249,0.4);}
   50{box-shadow:0 0 20px rgba(103,232,249,0.7);}
 }
 .pulse{animation:pulse-glow 2.4s ease-in-out infinite;}
 
+/* 底部说明文字 */
+.report-footer-note{
+  text-align:center;font-size:12px;color:#64748b;margin-top:18px;line-height:1.6;
+}
+
 @media screen and (max-width:640px){
   .report-head-card{flex-direction:column;text-align:center;}
-  .two-col{grid-template-columns:1fr;}
   .report-main-title{font-size:24px;}
 }
 </style>
@@ -304,8 +327,8 @@ button{
   <div class="progress-fill" id="topProgress"></div>
   <div class="progress-sweep"></div>
 </div>
-<div class="wrap" id="mainWrap">
-  <div class="glass-card">
+<div class="wrap">
+  <div class="glass-card" id="quizCard">
     <!-- 月相环形进度 -->
     <div class="moon-progress">
       <div class="moon-ring" id="moonRing"></div>
@@ -328,16 +351,16 @@ button{
     </div>
   </div>
 
-  <!-- ============全新报告结果页面，和截图UI一致============ -->
+  <!-- 报告结果页面 -->
   <div class="result-wrap" id="resultWrap">
     <div class="report-page">
       <div class="report-tag-top"><span>YOUR REPORT</span></div>
       <h1 class="report-main-title">你的内心模式探测报告</h1>
       <div class="report-subtitle">基于你对 14 道题的直觉选择</div>
 
-      <!--头部卡片-->
+      <!-- 头部人物卡片 -->
       <div class="report-head-card">
-        <img id="rewardAvatar" class="report-avatar" src="./reward-avatar.png" alt="头像">
+        <img id="rewardAvatar" class="report-avatar" src="./cat.png" alt="头像">
         <div class="report-head-text">
           <div class="en-label" id="reportEn">PRAGMATIST</div>
           <div class="cn-title" id="reportTitle">务实型 · 深海潜行者</div>
@@ -345,10 +368,10 @@ button{
         </div>
       </div>
 
-      <!--维度区块容器-->
+      <!-- 维度区块容器 -->
       <div id="dimContainer"></div>
 
-      <!--双栏：优势 /小特质-->
+      <!-- 双栏：优势 / 小特质 -->
       <div class="two-col">
         <div class="col-card">
           <div class="col-title">✦ 你的突出优势</div>
@@ -360,19 +383,29 @@ button{
         </div>
       </div>
 
-      <div style="text-align:center;">
+      <!-- 底部限定头像卡片 -->
+      <div class="avatar-award-card">
+        <h3>✨ 你获得限定头像</h3>
+        <p>完成本次内心模式探测，解锁专属头像徽章</p>
+        <img class="avatar-preview pulse" src="./cat.png" alt="限定头像">
+        <br>
         <button class="download-avatar" onclick="downloadAvatar()">保存头像徽章</button>
         <button class="btn-next back-test" onclick="resetQuiz()">重新开始探测</button>
       </div>
+
+      <!-- 底部说明 -->
+      <p class="report-footer-note">
+        本测试为趣味性格探索内容，仅供娱乐参考，不代表专业心理评估结果。
+      </p>
     </div>
   </div>
-
+</div>
 
 <script>
 // 完整题库（14维度）
 const questions = [
   { dim:"物质", q:"1.挑选随身小物件时你的倾向", opts:["A 优先实用耐用，外观过得去即可","B 优先观感审美，基础功能够用就好"] },
-  { dim:"听觉", q:"2.日常佩戴耳机更偏好", opts:["A 耳挂式，不封闭耳道，可以听见周遭环境声音","B 入耳式，隔绝外界噪音，拥有私人听觉空间"] },
+  { dim:"听觉", q:"2.日常佩戴耳机更偏好", opts:["A 不封闭耳道，可以听见周遭环境声音","B 隔绝外界噪音，拥有私人听觉空间"] },
   { dim:"音乐", q:"3.更容易被哪一类音乐触动", opts:["A 舒缓安静，氛围感强","B 节奏浓烈，情绪冲击力强","C 广为流传的大众热门曲目","D 小众冷门，受众不多的作品"] },
   { dim:"规划", q:"4.对待待办的事情，你更习惯", opts:["A 提前规划妥当，一切确定才安心","B 随情况调整，接纳随机的变化"] },
   { dim:"决策", q:"5.面临重要抉择，你的状态", opts:["A 多方权衡，会犹豫很久再定下来","B 快速做出判断，愿意承担试错结果"] },
@@ -386,11 +419,11 @@ const questions = [
   { dim:"遗憾", q:"13.面对过往留下的遗憾", opts:["A 时常回想，容易反复纠结内耗","B 快速放下，很少回头沉浸过去"] },
   { dim:"变动", q:"14.计划被别人临时打乱的时候", opts:["A 会感到烦躁，不太适应变动","B 可以接受，灵活调整即可"] }
 ];
-// 全局变量
+
 let currentPage = 0;
 let answers = Array(questions.length).fill(null);
 const total = questions.length;
-// DOM元素缓存
+
 const topProgress = document.getElementById("topProgress");
 const moonRing = document.getElementById("moonRing");
 const moonText = document.getElementById("moonText");
@@ -399,7 +432,7 @@ const pageIndicator = document.getElementById("pageIndicator");
 const pageBody = document.getElementById("pageBody");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
-const quizBox = document.querySelector(".glass-card");
+const quizCard = document.getElementById("quizCard");
 const resultWrap = document.getElementById("resultWrap");
 
 const reportEn = document.getElementById("reportEn");
@@ -408,47 +441,8 @@ const reportDesc = document.getElementById("reportDesc");
 const dimContainer = document.getElementById("dimContainer");
 const advBox = document.getElementById("advBox");
 const weakBox = document.getElementById("weakBox");
-
-const adminPanel = document.getElementById("adminPanel");
-const recordList = document.getElementById("recordList");
-const mainWrap = document.getElementById("mainWrap");
 const avatarImg = document.getElementById("rewardAvatar");
 
-
-// 本地记录存储
-function getAllRecords(){
-  const s = localStorage.getItem("quiz_records");
-  return s ? JSON.parse(s) : [];
-}
-function saveRecord(userAns, reportHtml){
-  const list = getAllRecords();
-  list.push({time:new Date().toLocaleString(), answers:[...userAns], report:reportHtml});
-  localStorage.setItem("quiz_records", JSON.stringify(list));
-}
-function renderRecords(){
-  const list = getAllRecords();
-  if(list.length ===0){recordList.innerHTML = "<p>暂无用户作答数据</p>";return;}
-  let html = "";
-  list.forEach((item,idx)=>{
-    let ansStr = "";
-    item.answers.forEach((optIdx,qIdx)=>{
-      ansStr += `${questions[qIdx].q} → ${questions[qIdx].opts[optIdx]}<br>`;
-    })
-    html += `
-    <div class="record-item">
-      <div class="record-time">第${idx+1}份 | ${item.time}</div>
-      <div>全部选择：<br>${ansStr}<hr>${item.report}</div>
-    </div>`;
-  })
-  recordList.innerHTML = html;
-}
-function openAdminPanel(){renderRecords();adminPanel.style.display="block";}
-function closeAdminPanel(){adminPanel.style.display="none";}
-function clearAllRecords(){
-  if(confirm("确定永久清空所有作答记录？不可恢复！")){
-    localStorage.removeItem("quiz_records");renderRecords();
-  }
-}
 // 头像下载功能
 function downloadAvatar(){
   const link = document.createElement("a");
@@ -458,6 +452,7 @@ function downloadAvatar(){
   link.click();
   link.remove();
 }
+
 // 渲染圆点进度指示器
 function renderDots(){
   dotWrap.innerHTML = "";
@@ -469,19 +464,18 @@ function renderDots(){
     dotWrap.appendChild(dot);
   }
 }
-// 更新全部进度组件（顶部条+月相环+文字）
+
+// 更新进度
 function updateAllProgress(){
   const percent = (currentPage+1)/total;
-  // 顶部渐变进度条
   topProgress.style.transform = `scaleX(${percent})`;
-  // 月相环形进度
   moonRing.style.background = `conic-gradient(#67e8f9 ${percent*100}%, #334155 ${percent*100}% 100%)`;
   moonText.innerText = `${currentPage+1}/${total}`;
-  // 圆点指示器
   renderDots();
   pageIndicator.innerText = `第 ${currentPage+1} / ${total} 题 · ${questions[currentPage].dim}维度`;
 }
-// 渲染题目，带选项交错60ms淡入动画
+
+// 渲染题目
 function renderPage(isForward=true){
   const q = questions[currentPage];
   pageBody.innerHTML = `<div class="q-title">${q.q}</div>`;
@@ -509,7 +503,8 @@ function renderPage(isForward=true){
     nextBtn.innerText = currentPage === total-1 ? "查看完整报告" : "下一题";
   }
 }
-// 翻页按钮逻辑
+
+// 翻页逻辑
 prevBtn.onclick = ()=>{
   if(currentPage>0){currentPage--;renderPage(false);}
 }
@@ -517,25 +512,25 @@ nextBtn.onclick = ()=>{
   if(currentPage < total-1){
     currentPage++;renderPage(true);
   }else{
-    const reportRaw = generateReport();
-    quizBox.style.display = "none";
+    generateReport();
+    quizCard.style.display = "none";
     resultWrap.style.display = "block";
-    saveRecord(answers, reportRaw);
   }
 }
+
 // 重置测试
 function resetQuiz(){
   currentPage = 0;
   answers = Array(total).fill(null);
-  quizBox.style.display = "block";
+  quizCard.style.display = "block";
   resultWrap.style.display = "none";
   renderPage(true);
 }
 
-// ======================生成报告，完全匹配截图布局======================
+// 生成报告
 function generateReport(){
   const a = answers;
-  // 底色判断
+
   const baseType = a[0]===0 ? "务实型" : "感受型";
   const baseEn = baseType === "务实型" ? "PRAGMATIST" : "SENTIMENTALIST";
   const titleName = baseType === "务实型" ? "深海潜行者" : "月光收藏家";
@@ -544,15 +539,13 @@ function generateReport(){
   reportTitle.innerText = `${baseType} · ${titleName}`;
   reportDesc.innerText = `结合全部选择可以看出，你的性格底色偏向【${baseType}】。`;
 
-  // 每个维度文本，和截图模块一一对应
   const dimData = [];
-  //1 物质与感知
+
   let s1 = a[0]===0
     ?"物质层面，看待事物更看重实际使用价值；听觉习惯投射出，你更向往拥有隔绝干扰的私人空间。"
     :"物质层面，看待事物更看重观感氛围感；听觉习惯投射出，你倾向和外界环境保持感知连通。";
   dimData.push({label:"物质与感知",text:s1});
 
-  //2音乐审美
   let s2;
   if(a[2]===0){
     s2="音乐审美上你偏爱舒缓安静、氛围感强的类型，这侧面体现你内心渴望安宁、细腻敏感，习惯在低饱和的情绪里与自己相处。";
@@ -565,44 +558,37 @@ function generateReport(){
   }
   dimData.push({label:"音乐审美",text:s2});
 
-  //3节奏与决策
-  const planText = a[3]===0?"接纳变数，适应随性状态":"偏爱提前规划，不喜欢突发打乱";
+  const planText = a[3]===0?"偏爱提前规划，不喜欢突发打乱":"接纳变数，适应随性状态";
   const decText = a[4]===0?"审慎思虑型":"果敢行动型";
   dimData.push({label:"节奏与决策",text:`生活节奏方面，${planText}；做决策属于【${decText}】。`});
 
-  //4社交与反馈
   const socText = a[5]===0?"被动慢热，习惯等待他人靠近":"主动外向，愿意主动开启交流";
   const feedText = a[6]===0?"更依赖正向鼓励滋养情绪":"更愿意接受批评建议推动成长";
   dimData.push({label:"社交与反馈",text:`社交模式属于【${socText}】。接收外界评价时，${feedText}。`});
 
-  //5冲突与回血
   const confText = a[7]===0?"坦率直接，敢于亮出立场":"温和迂回，优先缓和冲突";
   const recText = a[8]===0?"依靠独处静养回血":"依靠陪伴社交恢复精力";
   dimData.push({label:"冲突与回血",text:`发生观念冲突时，你的处事风格是【${confText}】；精力恢复则依靠【${recText}】。`});
 
-  //6探索欲
   const expText = a[9]===0?"先观望再行动":"直接上手体验，不惧踩坑";
   dimData.push({label:"探索欲",text:`面对全新未知事物，你习惯【${expText}】。`});
 
-  //7人际边界
   let oldStr;
   if(a[10]===0) oldStr="久未联系的故人找你，你会有一点拘谨，需要时间慢慢找回相处的节奏";
   else if(a[10]===1) oldStr="久未联系的故人找你，可以很快熟络，快速恢复往日相处状态";
-  else oldStr:"久未联系的故人找你，内心会升起戒备，会刻意拉开距离";
+  else oldStr="久未联系的故人找你，内心会升起戒备，会刻意拉开距离";
 
   let strangerStr;
-  if(a[11]===0) strangerStr:"遭遇陌生人谈及自己，本能产生防备，会下意识回避话题";
-  else if(a[11]===1) strangerStr:"遭遇陌生人谈及自己，礼貌应付保持分寸，人际边界属于【温和中立】";
-  else strangerStr:"遭遇陌生人谈及自己，乐于接住话题，愿意敞开自己去沟通，能看出你在人际边界上属于【开放包容】";
+  if(a[11]===0) strangerStr="遭遇陌生人谈及自己，本能产生防备，会下意识回避话题";
+  else if(a[11]===1) strangerStr="遭遇陌生人谈及自己，礼貌应付保持分寸，人际边界属于【温和中立】";
+  else strangerStr="遭遇陌生人谈及自己，乐于接住话题，愿意敞开自己去沟通，能看出你在人际边界上属于【开放包容】";
 
   dimData.push({label:"人际边界",text:`人际上，${oldStr}；${strangerStr}。`});
 
-  //8应变与释怀
   const changeStr = a[13]===0?"容易产生抵触情绪":"可以接纳变化快速调整";
   const regretStr = a[12]===0?"容易反复回想内耗":"更容易放下过往向前看";
   dimData.push({label:"应变与释怀",text:`遭遇计划被打乱，你【${changeStr}】；对待过往遗憾，【${regretStr}】。`});
 
-  //渲染维度区块
   dimContainer.innerHTML = "";
   dimData.forEach(d=>{
     const block = document.createElement("div");
@@ -614,7 +600,6 @@ function generateReport(){
     dimContainer.appendChild(block);
   })
 
-  //优势气泡
   let advList,weakList;
   if(baseType === "务实型"){
     advList = ["务实可靠，处理事务有章法、能落地","弹性强，在变化中仍能稳步前行","拥有丰盈的内心世界，独处时也不觉空虚"];
@@ -625,8 +610,6 @@ function generateReport(){
   }
   advBox.innerHTML = advList.map(i=>`<span class="bubble-item">${i}</span>`).join("");
   weakBox.innerHTML = weakList.map(i=>`<span class="bubble-item">${i}</span>`).join("");
-
-  return JSON.stringify({baseType,titleName,dimData,advList,weakList});
 }
 
 // 页面初始化
