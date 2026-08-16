@@ -50,7 +50,7 @@ body{
 /* 页面容器 */
 .wrap{
   position:relative;z:1;
-  max-width:760px;margin:0 auto;padding:24px 16px 40px;
+  max-width:860px;margin:0 auto;padding:24px 16px 40px;
 }
 /* 顶部全局渐变扫光进度条 */
 .top-progress-bar{
@@ -189,44 +189,98 @@ button{
 }
 .btn-next:hover::after{left:100%;}
 .btn-next:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
-/* 结果报告面板 */
-.result-wrap{display:none;margin-top:24px;}
-.avatar-box{text-align:center;margin:30px 0;}
-.avatar-tip{font-size:15px;color:#a5b4fc;margin-bottom:12px;}
-#rewardAvatar{
-  width:140px;height:140px;border-radius:50%;object-fit:cover;
-  position:relative;border:none;
-  box-shadow:0 0 0 4px transparent;
+
+/* ====================== 【新版报告样式 对标截图】 ====================== */
+.result-wrap{display:none;margin-top:20px;}
+.report-page{
+  width:100%;
+}
+.report-tag-top{
+  text-align:center;margin-bottom:12px;
+}
+.report-tag-top span{
+  display:inline-block;
+  border:1px solid rgba(255,255,255,0.25);
+  padding:6px 20px;border-radius:999px;
+  font-size:13px;letter-spacing:1px;color:#e2e8f0;
+}
+.report-main-title{
+  text-align:center;
+  font-size:32px;font-weight:600;margin-bottom:8px;color:#f1f5f9;
+}
+.report-subtitle{
+  text-align:center;font-size:14px;color:#94a3b8;margin-bottom:32px;
+}
+/* 头部人物卡片 */
+.report-head-card{
+  background:rgba(51,70,105,0.35);
+  border:1px solid rgba(148,163,184,0.2);
+  border-radius:18px;
+  padding:24px;
+  display:flex;gap:22px;align-items:center;margin-bottom:24px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.25);
+}
+.report-avatar{
+  width:110px;height:110px;border-radius:50%;
+  object-fit:cover;
   background:conic-gradient(#67e8f9,#5eead4,#a5b4fc,#67e8f9);
   padding:4px;animation:rotate-glow 6s linear infinite;
 }
 @keyframes rotate-glow{
-  100{transform:rotate(360deg);}
+  100%{transform:rotate(360deg);}
+}
+.report-head-text .en-label{
+  font-size:14px;color:#94a3b8;letter-spacing:1px;margin-bottom:6px;
+}
+.report-head-text .cn-title{
+  font-size:24px;font-weight:600;margin-bottom:8px;
+}
+.report-head-text .desc{
+  font-size:14px;color:#cbd5e1;
+}
+/* 维度模块 */
+.dim-block{
+  background:rgba(45,60,92,0.25);
+  border:1px solid rgba(148,163,184,0.15);
+  border-radius:14px;padding:18px;margin-bottom:14px;
+}
+.dim-label{
+  display:inline-block;
+  background:rgba(103,232,249,0.15);
+  color:#7dd3fc;
+  border:1px solid rgba(103,232,249,0.25);
+  padding:3px 10px;border-radius:999px;font-size:12px;font-weight:500;margin-bottom:10px;
+}
+.dim-text{
+  font-size:14.5px;color:#e2e8f0;line-height:1.7;
+}
+/* 双栏优势&小特质 */
+.two-col{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;
+}
+.col-card{
+  background:rgba(45,60,92,0.25);
+  border:1px solid rgba(148,163,184,0.15);
+  border-radius:14px;padding:22px;
+}
+.col-title{
+  font-size:16px;margin-bottom:14px;color:#f1f5f9;
+}
+.bubble-item{
+  display:inline-block;
+  background:rgba(103,232,249,0.12);
+  color:#b6e6f2;
+  border-radius:999px;
+  padding:6px 12px;
+  font-size:13px;margin:4px 6px 4px 0;
 }
 .download-avatar{
-  margin-top:14px;padding:10px 20px;border-radius:10px;
+  margin:28px 0 12px 0;padding:11px 22px;border-radius:12px;
   background:rgba(103,232,249,0.2);color:#67e8f9;border:1px solid #67e8f9;
   cursor:pointer;font-size:14px;
 }
-.report-title{
-  font-size:20px;margin-bottom:16px;
-  background:linear-gradient(90deg,#67e8f9,#a5b4fc);
-  -webkit-background-clip:text;color:transparent;
-}
-.report-tag{
-  display:inline-block;padding:4px 12px;border-radius:99px;margin:4px 6px 4px 0;
-  background:rgba(165,180,252,0.16);border:1px solid rgba(165,180,252,0.3);
-  font-size:13px;color:#cbd5e1;transition:transform 0.2s ease;
-}
-.report-tag:hover{transform:translateY(-2px);}
-.report-content{line-height:1.8;font-size:15px;color:#e2e8f0;}
-.report-content p{margin:10px 0;}
-.character-title{
-  font-size:19px;margin:12px 0;font-weight:600;
-  background:linear-gradient(90deg,#67e8f9,#5eead4);
-  -webkit-background-clip:text;color:transparent;
-}
-.back-test{width:100%;margin-top:22px;}
+.back-test{width:100%;margin-top:12px;}
+
 /* 管理员后台面板 */
 .admin-panel{display:none;margin-top:30px;padding:24px;border-radius:16px;
 background:rgba(30,41,59,0.5);border:1px solid rgba(103,232,249,0.2);}
@@ -242,6 +296,12 @@ background:rgba(30,41,59,0.5);border:1px solid rgba(103,232,249,0.2);}
   50{box-shadow:0 0 20px rgba(103,232,249,0.7);}
 }
 .pulse{animation:pulse-glow 2.4s ease-in-out infinite;}
+
+@media screen and (max-width:640px){
+  .report-head-card{flex-direction:column;text-align:center;}
+  .two-col{grid-template-columns:1fr;}
+  .report-main-title{font-size:24px;}
+}
 </style>
 </head>
 <body>
@@ -277,18 +337,42 @@ background:rgba(30,41,59,0.5);border:1px solid rgba(103,232,249,0.2);}
     </div>
   </div>
 
-  <!-- 结果报告面板 -->
+  <!-- ============全新报告结果页面，和截图UI一致============ -->
   <div class="result-wrap" id="resultWrap">
-    <div class="glass-card">
-      <div class="avatar-box">
-        <div class="avatar-tip pulse">🎁你的专属奖励头像徽章</div>
-        <img id="rewardAvatar" src="./reward-avatar.png" alt="专属头像">
-        <br/>
-        <button class="download-avatar" onclick="downloadAvatar()">保存头像到本地</button>
+    <div class="report-page">
+      <div class="report-tag-top"><span>YOUR REPORT</span></div>
+      <h1 class="report-main-title">你的内心模式探测报告</h1>
+      <div class="report-subtitle">基于你对 14 道题的直觉选择</div>
+
+      <!--头部卡片-->
+      <div class="report-head-card">
+        <img id="rewardAvatar" class="report-avatar" src="./reward-avatar.png" alt="头像">
+        <div class="report-head-text">
+          <div class="en-label" id="reportEn">PRAGMATIST</div>
+          <div class="cn-title" id="reportTitle">务实型 · 深海潜行者</div>
+          <div class="desc" id="reportDesc">结合全部选择可以看出，你的性格底色偏向【务实型】。</div>
+        </div>
       </div>
-      <h3 class="report-title">你的内心模式探测完整报告</h3>
-      <div id="reportContent" class="report-content"></div>
-      <button class="back-test btn-next" onclick="resetQuiz()">重新开始探测</button>
+
+      <!--维度区块容器-->
+      <div id="dimContainer"></div>
+
+      <!--双栏：优势 /小特质-->
+      <div class="two-col">
+        <div class="col-card">
+          <div class="col-title">✦ 你的突出优势</div>
+          <div id="advBox"></div>
+        </div>
+        <div class="col-card">
+          <div class="col-title">○ 容易显露的小特质</div>
+          <div id="weakBox"></div>
+        </div>
+      </div>
+
+      <div style="text-align:center;">
+        <button class="download-avatar" onclick="downloadAvatar()">保存头像徽章</button>
+        <button class="btn-next back-test" onclick="resetQuiz()">重新开始探测</button>
+      </div>
     </div>
   </div>
 
@@ -307,7 +391,7 @@ background:rgba(30,41,59,0.5);border:1px solid rgba(103,232,249,0.2);}
 // 完整题库（14维度）
 const questions = [
   { dim:"物质", q:"1.挑选随身小物件时你的倾向", opts:["A 优先实用耐用，外观过得去即可","B 优先观感审美，基础功能够用就好"] },
-  { dim:"听觉", q:"2.日常佩戴耳机更偏好", opts:["A 不封闭耳道，可以听见周遭环境声音","B 隔绝外界噪音，拥有私人听觉空间"] },
+  { dim:"听觉", q:"2.日常佩戴耳机更偏好", opts:["A 耳挂式，不封闭耳道，可以听见周遭环境声音","B 入耳式，隔绝外界噪音，拥有私人听觉空间"] },
   { dim:"音乐", q:"3.更容易被哪一类音乐触动", opts:["A 舒缓安静，氛围感强","B 节奏浓烈，情绪冲击力强","C 广为流传的大众热门曲目","D 小众冷门，受众不多的作品"] },
   { dim:"规划", q:"4.对待待办的事情，你更习惯", opts:["A 提前规划妥当，一切确定才安心","B 随情况调整，接纳随机的变化"] },
   { dim:"决策", q:"5.面临重要抉择，你的状态", opts:["A 多方权衡，会犹豫很久再定下来","B 快速做出判断，愿意承担试错结果"] },
@@ -336,27 +420,20 @@ const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 const quizBox = document.querySelector(".glass-card");
 const resultWrap = document.getElementById("resultWrap");
-const reportContent = document.getElementById("reportContent");
+
+const reportEn = document.getElementById("reportEn");
+const reportTitle = document.getElementById("reportTitle");
+const reportDesc = document.getElementById("reportDesc");
+const dimContainer = document.getElementById("dimContainer");
+const advBox = document.getElementById("advBox");
+const weakBox = document.getElementById("weakBox");
+
 const adminPanel = document.getElementById("adminPanel");
 const recordList = document.getElementById("recordList");
 const mainWrap = document.getElementById("mainWrap");
 const avatarImg = document.getElementById("rewardAvatar");
 
-// ========== 管理员后台：连续点击5次入口 ==========
-let clickCount = 0;
-let clickTimer = null;
-const ADMIN_PWD = "admin123";
-mainWrap.addEventListener("click",()=>{
-  clickCount++;
-  clearTimeout(clickTimer);
-  clickTimer = setTimeout(()=>clickCount=0,1200);
-  if(clickCount >=5){
-    const pwd = prompt("输入管理员密码查看全部作答记录：");
-    if(pwd === ADMIN_PWD) openAdminPanel();
-    else if(pwd !== null) alert("密码错误，无法进入");
-    clickCount = 0;
-  }
-})
+
 // 本地记录存储
 function getAllRecords(){
   const s = localStorage.getItem("quiz_records");
@@ -459,10 +536,10 @@ nextBtn.onclick = ()=>{
   if(currentPage < total-1){
     currentPage++;renderPage(true);
   }else{
-    const report = generateReport();
+    const reportRaw = generateReport();
     quizBox.style.display = "none";
     resultWrap.style.display = "block";
-    saveRecord(answers, report);
+    saveRecord(answers, reportRaw);
   }
 }
 // 重置测试
@@ -473,69 +550,104 @@ function resetQuiz(){
   resultWrap.style.display = "none";
   renderPage(true);
 }
-// 生成完整多维报告 + 性格称号（深海潜行者/月光收藏家）
+
+// ======================生成报告，完全匹配截图布局======================
 function generateReport(){
   const a = answers;
-  // 基础性格底色
-  const base = a[0]===0 ? "务实型" : "感受型";
-  const title = base === "务实型" ? "深海潜行者" : "月光收藏家";
-  let tagList = [];
-  // 各维度文字逻辑
-  let material = a[0]===0 ? "更看重实用价值，理性优先" : "更在意审美与情绪氛围感";
-  let audio = a[1]===0 ? "习惯和外界保持连通，不喜欢完全隔绝" : "偏爱拥有独处私密听觉空间";
-  let musicDesc;
-  if(a[2]===0){musicDesc="偏爱舒缓氛围感音乐";tagList.push("松弛感");}
-  else if(a[2]===1){musicDesc="钟情浓烈有冲击力的曲风";tagList.push("情绪外放");}
-  else if(a[2]===2){musicDesc="喜欢大众共鸣强的热门歌曲";tagList.push("合群共情");}
-  else{musicDesc="偏爱小众冷门独立音乐";tagList.push("独特审美");}
-  let plan = a[3]===0 ? "凡事提前规划，讨厌突发变动" : "接纳变数，擅长灵活调整";
-  let decide = a[4]===0 ? "审慎深思，反复权衡再决定" : "果敢利落，愿意试错";
-  let social = a[5]===0 ? "慢热被动，等待他人主动" : "外向主动，擅长开启交流";
-  let feedback = a[6]===0 ? "正向夸奖更能激励你" : "批评建议更利于成长";
-  let conflict = a[7]===0 ? "直率直白，不刻意回避分歧" : "温和包容，优先避免冲突";
-  let recover = a[8]===0 ? "独处充电，安静恢复精力" : "靠陪伴社交回血";
-  let explore = a[9]===0 ? "先观察再尝试，谨慎稳妥" : "直接上手，不惧踩坑";
-  let oldFriend;
-  if(a[10]===0){oldFriend="久未联系的熟人会拘谨慢热";tagList.push("慢热");}
-  else if(a[10]===1){oldFriend="老友重逢迅速熟络";tagList.push("自来熟");}
-  else{oldFriend="对许久未见的人存有戒备";tagList.push("边界感");}
-  let stranger;
-  if(a[11]===0){stranger="陌生人搭话本能防备";tagList.push("高边界");}
-  else if(a[11]===1){stranger="礼貌应付，保持分寸";tagList.push("温和克制");}
-  else{stranger="乐于和陌生人深度交流";tagList.push("开放包容");}
-  let regret = a[12]===0 ? "容易纠结过往，容易内耗" : "放下遗憾，向前看";
-  let change = a[13]===0 ? "计划打乱容易烦躁不安" : "变动中适应力强";
-  // 优缺点
-  let strong,weak;
-  if(base==="务实型"){
-    strong="踏实靠谱，目标清晰，落地执行力强，遇事稳重";
-    weak="容易忽略情绪感受，偶尔略显刻板不懂变通";
+  // 底色判断
+  const baseType = a[0]===0 ? "务实型" : "感受型";
+  const baseEn = baseType === "务实型" ? "PRAGMATIST" : "SENTIMENTALIST";
+  const titleName = baseType === "务实型" ? "深海潜行者" : "月光收藏家";
+
+  reportEn.innerText = baseEn;
+  reportTitle.innerText = `${baseType} · ${titleName}`;
+  reportDesc.innerText = `结合全部选择可以看出，你的性格底色偏向【${baseType}】。`;
+
+  // 每个维度文本，和截图模块一一对应
+  const dimData = [];
+  //1 物质与感知
+  let s1 = a[0]===0
+    ?"物质层面，看待事物更看重实际使用价值；听觉习惯投射出，你更向往拥有隔绝干扰的私人空间。"
+    :"物质层面，看待事物更看重观感氛围感；听觉习惯投射出，你倾向和外界环境保持感知连通。";
+  dimData.push({label:"物质与感知",text:s1});
+
+  //2音乐审美
+  let s2;
+  if(a[2]===0){
+    s2="音乐审美上你偏爱舒缓安静、氛围感强的类型，这侧面体现你内心渴望安宁、细腻敏感，习惯在低饱和的情绪里与自己相处。";
+  }else if(a[2]===1){
+    s2="音乐审美上偏爱节奏浓烈、情绪冲击力强的作品，内心情绪张力充足，容易被热烈的表达打动。";
+  }else if(a[2]===2){
+    s2="音乐审美偏向大众热门曲目，更容易共情群体情绪，喜欢拥有共鸣感的内容。";
   }else{
-    strong="共情力极强，感知细腻，想象力丰富，温柔包容";
-    weak="容易被情绪裹挟，做事容易理想化，缺乏规划";
+    s2="音乐审美偏向小众冷门作品，拥有独立的审美体系，不盲从大众潮流。";
   }
-  // 拼接标签HTML
-  let tagHtml = "";
-  tagList.forEach(t=>tagHtml += `<span class="report-tag">${t}</span>`);
-  const html = `
-<div class="character-title">你的性格底色：${base} · 专属称号：${title}</div>
-<div>${tagHtml}</div>
-<p>【物质视角】${material}</p>
-<p>【听觉习惯】${audio}</p>
-<p>【音乐偏好】${musicDesc}</p>
-<p>【生活节奏】${plan}；【决策风格】${decide}</p>
-<p>【社交模式】${social}；【反馈偏好】${feedback}</p>
-<p>【分歧处理】${conflict}；【能量恢复】${recover}</p>
-<p>【探索方式】${explore}</p>
-<p>【旧友相处】${oldFriend}；【陌生人态度】${stranger}</p>
-<p>【遗憾心态】${regret}；【突发变动】${change}</p>
-<br/>
-<p><strong>✅你的核心优势：</strong>${strong}</p>
-<p><strong>⚠️可以慢慢调整的小特质：</strong>${weak}</p>
-`;
-  reportContent.innerHTML = html;
-  return html;
+  dimData.push({label:"音乐审美",text:s2});
+
+  //3节奏与决策
+  const planText = a[3]===0?"接纳变数，适应随性状态":"偏爱提前规划，不喜欢突发打乱";
+  const decText = a[4]===0?"审慎思虑型":"果敢行动型";
+  dimData.push({label:"节奏与决策",text:`生活节奏方面，${planText}；做决策属于【${decText}】。`});
+
+  //4社交与反馈
+  const socText = a[5]===0?"被动慢热，习惯等待他人靠近":"主动外向，愿意主动开启交流";
+  const feedText = a[6]===0?"更依赖正向鼓励滋养情绪":"更愿意接受批评建议推动成长";
+  dimData.push({label:"社交与反馈",text:`社交模式属于【${socText}】。接收外界评价时，${feedText}。`});
+
+  //5冲突与回血
+  const confText = a[7]===0?"坦率直接，敢于亮出立场":"温和迂回，优先缓和冲突";
+  const recText = a[8]===0?"依靠独处静养回血":"依靠陪伴社交恢复精力";
+  dimData.push({label:"冲突与回血",text:`发生观念冲突时，你的处事风格是【${confText}】；精力恢复则依靠【${recText}】。`});
+
+  //6探索欲
+  const expText = a[9]===0?"先观望再行动":"直接上手体验，不惧踩坑";
+  dimData.push({label:"探索欲",text:`面对全新未知事物，你习惯【${expText}】。`});
+
+  //7人际边界
+  let oldStr;
+  if(a[10]===0) oldStr="久未联系的故人找你，你会有一点拘谨，需要时间慢慢找回相处的节奏";
+  else if(a[10]===1) oldStr="久未联系的故人找你，可以很快熟络，快速恢复往日相处状态";
+  else oldStr:"久未联系的故人找你，内心会升起戒备，会刻意拉开距离";
+
+  let strangerStr;
+  if(a[11]===0) strangerStr:"遭遇陌生人谈及自己，本能产生防备，会下意识回避话题";
+  else if(a[11]===1) strangerStr:"遭遇陌生人谈及自己，礼貌应付保持分寸，人际边界属于【温和中立】";
+  else strangerStr:"遭遇陌生人谈及自己，乐于接住话题，愿意敞开自己去沟通，能看出你在人际边界上属于【开放包容】";
+
+  dimData.push({label:"人际边界",text:`人际上，${oldStr}；${strangerStr}。`});
+
+  //8应变与释怀
+  const changeStr = a[13]===0?"容易产生抵触情绪":"可以接纳变化快速调整";
+  const regretStr = a[12]===0?"容易反复回想内耗":"更容易放下过往向前看";
+  dimData.push({label:"应变与释怀",text:`遭遇计划被打乱，你【${changeStr}】；对待过往遗憾，【${regretStr}】。`});
+
+  //渲染维度区块
+  dimContainer.innerHTML = "";
+  dimData.forEach(d=>{
+    const block = document.createElement("div");
+    block.className = "dim-block";
+    block.innerHTML = `
+        <span class="dim-label">${d.label}</span>
+        <div class="dim-text">${d.text}</div>
+    `;
+    dimContainer.appendChild(block);
+  })
+
+  //优势气泡
+  let advList,weakList;
+  if(baseType === "务实型"){
+    advList = ["务实可靠，处理事务有章法、能落地","弹性强，在变化中仍能稳步前行","拥有丰盈的内心世界，独处时也不觉空虚"];
+    weakList = ["偶尔会因思虑过多而错过最佳时机","在热闹场合容易耗能，需要较长时间回血","表达直接，偶尔会无意中伤到身边人","对过往遗憾难以释怀，容易反复内耗"];
+  }else{
+    advList = ["共情细腻，可以敏锐捕捉他人情绪","想象力丰富，拥有很强感受力","待人温柔包容，擅长照顾氛围"];
+    weakList = ["容易被情绪裹挟，做事容易理想化","规划感偏弱，突发变动容易慌乱","容易过度共情别人，消耗自身精力","对遗憾反复回味，陷入情绪内耗"];
+  }
+  advBox.innerHTML = advList.map(i=>`<span class="bubble-item">${i}</span>`).join("");
+  weakBox.innerHTML = weakList.map(i=>`<span class="bubble-item">${i}</span>`).join("");
+
+  return JSON.stringify({baseType,titleName,dimData,advList,weakList});
 }
+
 // 页面初始化
 renderPage(true);
 </script>
