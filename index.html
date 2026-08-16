@@ -281,15 +281,6 @@ button{
 }
 .back-test{width:100%;margin-top:12px;}
 
-/* 管理员后台面板 */
-.admin-panel{display:none;margin-top:30px;padding:24px;border-radius:16px;
-background:rgba(30,41,59,0.5);border:1px solid rgba(103,232,249,0.2);}
-.admin-panel h2{color:#67e8f9;margin-bottom:16px;font-size:20px;}
-.record-item{background:rgba(15,23,42,0.6);padding:16px;border-radius:12px;margin-bottom:14px;}
-.record-time{color:#94a3b8;font-size:13px;margin-bottom:8px;}
-.admin-buttons{display:flex;gap:12px;margin-top:20px;}
-.btn-clear{background:#ef4444;}
-.btn-close-admin{background:#475569;}
 /* 呼吸脉冲动画（引导/徽章） */
 @keyframes pulse-glow{
   0%,100{box-shadow:0 0 8px rgba(103,232,249,0.4);}
@@ -376,16 +367,6 @@ background:rgba(30,41,59,0.5);border:1px solid rgba(103,232,249,0.2);}
     </div>
   </div>
 
-  <!-- 管理员数据后台（隐藏） -->
-  <div class="admin-panel" id="adminPanel">
-    <h2>📊 全部用户作答记录（管理员专用）</h2>
-    <div id="recordList"></div>
-    <div class="admin-buttons">
-      <button class="btn-clear" onclick="clearAllRecords()">清空所有记录</button>
-      <button class="btn-close-admin" onclick="closeAdminPanel()">关闭面板</button>
-    </div>
-  </div>
-</div>
 
 <script>
 // 完整题库（14维度）
