@@ -2,361 +2,541 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>内心模式小探测</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:"Microsoft Yahei",system-ui, -apple-system}
+/* 全局基础 & 字体 */
+*{box-sizing:border-box;margin:0;padding:0}
 body{
-  background:  linear-gradient(135deg, #e6f0fc 0%, #edf4ff 50%, #e8eeff 100%);
-  color:#1a365d;
-  padding:28px 16px;
-  max-width:740px;
-  margin:0 auto;
+  font-family: "Noto Sans SC", Inter, system-ui, sans-serif;
+  color:#eef2ff;
   min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+  /* 四层径向渐变星空背景 */
+  background:
+    radial-gradient(circle at 10% 20%, rgba(103, 232, 249, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(165, 180, 252, 0.14) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(94, 234, 212, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at center, #0f172a 0%, #020617 100%);
 }
+/* 极光漂浮光斑层 */
+.aurora{
+  position:fixed;
+  top:-10%;left:-15%;
+  width:700px;height:700px;
+  background:radial-gradient(circle, rgba(103,232,249,0.18) 0%, transparent 65%);
+  filter:blur(90px);
+  animation:aurora-drift 22s ease-in-out infinite alternate;
+  pointer-events:none;z:0;
+}
+.starfield{
+  position:fixed;
+  bottom:-20%;right:-10%;
+  width:600px;height:600px;
+  background:radial-gradient(circle, rgba(165,180,252,0.15) 0%, transparent 60%);
+  filter:blur(80px);
+  animation:star-drift 26s ease-in-out infinite alternate;
+  pointer-events:none;z:0;
+}
+@keyframes aurora-drift{
+  0{transform:translate(0,0) rotate(0deg);}
+  100{transform:translate(120px,180px) rotate(12deg);}
+}
+@keyframes star-drift{
+  0{transform:translate(0,0) rotate(0deg);}
+  100{transform:translate(-100px,-140px) rotate(-10deg);}
+}
+/* 页面容器 */
 .wrap{
-  background:#ffffff;
-  border-radius:20px;
-  padding:32px 28px;
-  box-shadow: 0 8px 24px rgba(43, 108, 176, 0.15);
-  animation: fadeInUp 0.6s ease-out;
+  position:relative;z:1;
+  max-width:760px;margin:0 auto;padding:24px 16px 40px;
 }
-/* 顶部进度条 */
-.progress-wrap{
-  width:100%;
-  height:6px;
-  background:#dde6f5;
-  border-radius:99px;
-  margin-bottom:16px;
+/* 顶部全局渐变扫光进度条 */
+.top-progress-bar{
+  position:fixed;top:0;left:0;width:100%;height:3px;
+  background:#1e293b;overflow:hidden;z:999;
+}
+.progress-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,#67e8f9,#5eead4,#a5b4fc);
+  transform-origin:left center;transform:scaleX(0);
+  transition:transform 0.46s cubic-bezier(0.22,1,0.36,1);
+}
+.progress-sweep{
+  position:absolute;top:0;left:0;height:100%;width:40%;
+  background:linear-gradient(90deg,transparent, rgba(255,255,255,0.7), transparent);
+  animation:sweep-glow 2.2s linear infinite;
+}
+@keyframes sweep-glow{
+  0{transform:translateX(-100%);}
+  100{transform:translateX(250%);}
+}
+/* 顶部14题圆点进度指示器 */
+.dot-progress{
+  display:flex;gap:6px;justify:center;margin:16px 0 22px;
+}
+.dot-item{
+  width:8px;height:8px;border-radius:99px;background:#334155;
+  transition:all 0.3s ease;
+}
+.dot-item.done{background:#67e8f9;box-shadow:0 0 6px #67e8f9;}
+.dot-item.current{
+  width:24px;background:linear-gradient(90deg,#67e8f9,#a5b4fc);
+  box-shadow:0 0 10px rgba(103,232,249,0.7);
+}
+/* 玻璃拟态卡片通用 */
+.glass-card{
+  background:rgba(30,41,59,0.45);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(148,163,184,0.18);
+  border-radius:20px;
+  padding:32px 26px;
+  position:relative;
   overflow:hidden;
 }
-.progress-bar{
-  height:100%;
-  background: linear-gradient(90deg,#2b6cb0,#4277d8);
-  border-radius:99px;
-  transition: width 0.4s ease;
-  width:0%;
+.glass-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,#67e8f9,transparent);
 }
-@keyframes fadeInUp {
-  0% {opacity:0;transform:translateY(20px);}
-  100% {opacity:1;transform:translateY(0);}
+/* 月相环形进度（右上角辅助） */
+.moon-progress{
+  position:absolute;top:26px;right:26px;width:56px;height:56px;
+  border-radius:50%;background:#1e293b;display:grid;place-items:center;
 }
-/* 页面滑动动画 */
-@keyframes slideInRight {
-  from {opacity:0; transform: translateX(60px);}
-  to {opacity:1; transform: translateX(0px);}
+.moon-ring{
+  width:48px;height:48px;border-radius:50%;
+  background:conic-gradient(#67e8f9 0% 0%, #334155 0% 100%);
+  mask:radial-gradient(transparent 62%, black 63%);
+  -webkit-mask:radial-gradient(transparent 62%, black 63%);
+  transition:background 0.46s cubic-bezier(0.22,1,0.36,1);
 }
-@keyframes slideInLeft {
-  from {opacity:0; transform: translateX(-60px);}
-  to {opacity:1; transform: translateX(0px);}
+.moon-inner{
+  width:42px;height:42px;border-radius:50%;background:#0f172a;
+  display:grid;place-items:center;font-size:12px;font-weight:500;color:#cbd5e1;
 }
-.slide-right{
-  animation: slideInRight 0.35s ease forwards;
+/* 标题区域 */
+.page-header h1{
+  font-size:26px;text-align:center;
+  background:linear-gradient(90deg,#67e8f9,#a5b4fc);
+  -webkit-background-clip:text;color:transparent;
+  margin-bottom:8px;
 }
-.slide-left{
-  animation: slideInLeft 0.35s ease forwards;
-}
-@keyframes pulseBtn {
-  0%{transform:scale(1);}
-  50%{transform:scale(1.02);}
-  100%{transform:scale(1);}
-}
-h1{
-  background: linear-gradient(90deg,#2b6cb0,#4c68d7);
-  -webkit-background-clip:text;
-  color:transparent;
-  font-size:24px;
-  text-align:center;
-  margin-bottom:10px;
-}
-.desc{
-  text-align:center;
-  color:#5474a3;
-  font-size:14px;
-  margin-bottom:20px;
+.page-desc{
+  text-align:center;font-size:14px;color:#94a3b8;margin-bottom:24px;
 }
 .page-indicator{
-  text-align:center;
-  color:#4a70a8;
-  margin-bottom:24px;
-  font-size:14px;
+  text-align:center;font-size:14px;color:#a5b4fc;margin-bottom:28px;
+}
+/* 题目区域 滑动动画 */
+.question-wrap{position:relative;min-height:320px;overflow:hidden;}
+.slide-right{
+  animation:slideInRight 0.46s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.slide-left{
+  animation:slideInLeft 0.46s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+@keyframes slideInRight{
+  from{opacity:0;transform:translateX(70px);}
+  to{opacity:1;transform:translateX(0);}
+}
+@keyframes slideInLeft{
+  from{opacity:0;transform:translateX(-70px);}
+  to{opacity:1;transform:translateX(0);}
 }
 .q-title{
-  font-weight:500;
-  margin-bottom:24px;
-  font-size:17px;
-  color:#244b82;
+  font-size:18px;margin-bottom:26px;font-weight:500;color:#e0f2fe;
 }
+/* 选项按钮 交错淡入+hover流光 */
 .op-item{
-  margin:10px 0;
-  cursor:pointer;
-  padding:13px 16px;
-  border-radius:12px;
-  border:1px solid #c6dbf5;
-  background:#f7faff;
-  transition: all 0.25s ease;
+  padding:14px 18px;margin:12px 0;border-radius:14px;
+  background:rgba(51,65,85,0.5);border:1px solid rgba(148,163,184,0.16);
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:all 0.28s ease;opacity:0;transform:translateY(10px);
+}
+.op-item.ani{animation:stagger-fade 0.4s ease forwards;}
+@keyframes stagger-fade{
+  to{opacity:1;transform:translateY(0);}
+}
+.op-item::before{
+  content:"";position:absolute;left:0;top:0;width:3px;height:100%;
+  background:linear-gradient(#67e8f9,#a5b4fc);transform:scaleY(0);
+  transition:transform 0.28s ease;
 }
 .op-item:hover{
-  background:#e1edfc;
-  border-color:#8cb8e8;
-  transform:translateX(4px);
+  transform:translateY(-3px);border-color:rgba(103,232,249,0.4);
+  box-shadow:0 6px 16px rgba(103,232,249,0.12);
 }
+.op-item:hover::before{transform:scaleY(1);}
 .op-item.selected{
-  background: linear-gradient(90deg,#2b6cb0,#4277d8);
-  color:#ffffff;
-  border-color:#3b7cd3;
-  box-shadow:0 2px 8px rgba(43,108,176,0.25);
+  background:linear-gradient(135deg,rgba(103,232,249,0.18),rgba(165,180,252,0.18));
+  border-color:#67e8f9;
 }
-.btn-row{
-  display:flex;gap:12px;margin-top:30px;
-}
+/* 底部按钮栏 */
+.btn-row{display:flex;gap:14px;margin-top:36px;}
 button{
-  padding:13px;border:none;border-radius:12px;
-  color:#fff;font-size:16px;cursor:pointer;
-  transition: all 0.3s ease;
-  flex:1;
+  flex:1;padding:14px;border:none;border-radius:14px;font-size:16px;font-weight:500;
+  cursor:pointer;transition:all 0.3s ease;position:relative;overflow:hidden;color:#fff;
 }
-.btn-prev{
-  background:#89a8d3;
-}
+.btn-prev{background:rgba(71,85,105,0.6);}
 .btn-next{
-  background: linear-gradient(90deg,#2b6cb0,#4277d8);
+  background:linear-gradient(90deg,#67e8f9,#5eead4,#a5b4fc);
 }
-.btn-next:disabled{
-  background:#a1bde2;
-  cursor:not-allowed;
-  animation:none;
+.btn-next::after{
+  content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);
+  transition:left 0.5s ease;
 }
-.btn-next:hover:not(:disabled){
-  animation:pulseBtn 0.8s infinite;
-}
-.result-wrap{
-  display:none;
-  margin-top:10px;
-  animation: fadeInUp 0.7s ease;
-}
-.avatar-box{
-  text-align:center;
-  margin:24px 0;
-}
-.avatar-box>div{
-  color:#3468b3;
-  margin-bottom:10px;
-  font-weight:500;
-}
+.btn-next:hover::after{left:100%;}
+.btn-next:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
+/* 结果报告面板 */
+.result-wrap{display:none;margin-top:24px;}
+.avatar-box{text-align:center;margin:30px 0;}
+.avatar-tip{font-size:15px;color:#a5b4fc;margin-bottom:12px;}
 #rewardAvatar{
-  width:130px;
-  height:130px;
-  border-radius:50%;
-  object-fit:cover;
-  border:4px solid;
-  border-image: linear-gradient(135deg,#3182ce,#6379e8) 1;
-  box-shadow:0 4px 14px rgba(66, 119, 216,0.22);
+  width:140px;height:140px;border-radius:50%;object-fit:cover;
+  position:relative;border:none;
+  box-shadow:0 0 0 4px transparent;
+  background:conic-gradient(#67e8f9,#5eead4,#a5b4fc,#67e8f9);
+  padding:4px;animation:rotate-glow 6s linear infinite;
 }
-.report{
-  background: linear-gradient(140deg,#f0f7ff,#f4f7ff);
-  padding:24px;
-  border-radius:16px;
-  line-height:1.75;
-  font-size:15px;
-  border:1px solid #d8e8fb;
+@keyframes rotate-glow{
+  100{transform:rotate(360deg);}
 }
-.report h3{
-  color:#2b6cb0;
-  margin-bottom:14px;
-  font-size:18px;
+.download-avatar{
+  margin-top:14px;padding:10px 20px;border-radius:10px;
+  background:rgba(103,232,249,0.2);color:#67e8f9;border:1px solid #67e8f9;
+  cursor:pointer;font-size:14px;
 }
-.back-btn{
-  width:100%;
-  background: linear-gradient(90deg,#4a7fb8,#5c88d6);
-  margin-top:20px;
+.report-title{
+  font-size:20px;margin-bottom:16px;
+  background:linear-gradient(90deg,#67e8f9,#a5b4fc);
+  -webkit-background-clip:text;color:transparent;
 }
+.report-tag{
+  display:inline-block;padding:4px 12px;border-radius:99px;margin:4px 6px 4px 0;
+  background:rgba(165,180,252,0.16);border:1px solid rgba(165,180,252,0.3);
+  font-size:13px;color:#cbd5e1;transition:transform 0.2s ease;
+}
+.report-tag:hover{transform:translateY(-2px);}
+.report-content{line-height:1.8;font-size:15px;color:#e2e8f0;}
+.report-content p{margin:10px 0;}
+.character-title{
+  font-size:19px;margin:12px 0;font-weight:600;
+  background:linear-gradient(90deg,#67e8f9,#5eead4);
+  -webkit-background-clip:text;color:transparent;
+}
+.back-test{width:100%;margin-top:22px;}
+/* 管理员后台面板 */
+.admin-panel{display:none;margin-top:30px;padding:24px;border-radius:16px;
+background:rgba(30,41,59,0.5);border:1px solid rgba(103,232,249,0.2);}
+.admin-panel h2{color:#67e8f9;margin-bottom:16px;font-size:20px;}
+.record-item{background:rgba(15,23,42,0.6);padding:16px;border-radius:12px;margin-bottom:14px;}
+.record-time{color:#94a3b8;font-size:13px;margin-bottom:8px;}
+.admin-buttons{display:flex;gap:12px;margin-top:20px;}
+.btn-clear{background:#ef4444;}
+.btn-close-admin{background:#475569;}
+/* 呼吸脉冲动画（引导/徽章） */
+@keyframes pulse-glow{
+  0%,100{box-shadow:0 0 8px rgba(103,232,249,0.4);}
+  50{box-shadow:0 0 20px rgba(103,232,249,0.7);}
+}
+.pulse{animation:pulse-glow 2.4s ease-in-out infinite;}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>✨内心模式小探测</h1>
-  <div class="desc">凭第一直觉选择，趣味性格小测试｜非专业心理量表</div>
-
-  <!--进度条-->
-  <div class="progress-wrap">
-    <div class="progress-bar" id="progressBar"></div>
-  </div>
-
-  <div id="quizBox">
+<!-- 星空极光背景层 -->
+<div class="aurora"></div>
+<div class="starfield"></div>
+<!-- 顶部全局进度条 -->
+<div class="top-progress-bar">
+  <div class="progress-fill" id="topProgress"></div>
+  <div class="progress-sweep"></div>
+</div>
+<div class="wrap" id="mainWrap">
+  <div class="glass-card">
+    <!-- 月相环形进度 -->
+    <div class="moon-progress">
+      <div class="moon-ring" id="moonRing"></div>
+      <div class="moon-inner" id="moonText">0/14</div>
+    </div>
+    <div class="page-header">
+      <h1>✨内心模式小探测</h1>
+      <div class="page-desc">凭第一直觉作答，14道小题解锁专属内心报告｜趣味性格测试</div>
+    </div>
+    <!-- 圆点进度指示器 -->
+    <div class="dot-progress" id="dotWrap"></div>
     <div class="page-indicator" id="pageIndicator"></div>
-    <div class="question-page" id="pageBody"></div>
+    <!-- 答题区域 -->
+    <div class="question-wrap">
+      <div id="pageBody"></div>
+    </div>
     <div class="btn-row">
       <button class="btn-prev" id="prevBtn">上一题</button>
       <button class="btn-next" id="nextBtn">下一题</button>
     </div>
   </div>
 
+  <!-- 结果报告面板 -->
   <div class="result-wrap" id="resultWrap">
-    <div class="avatar-box">
-      <div>🎁测试奖励头像</div>
-      <img id="rewardAvatar" src="./cat.png" alt="奖励头像"/>
+    <div class="glass-card">
+      <div class="avatar-box">
+        <div class="avatar-tip pulse">🎁你的专属奖励头像徽章</div>
+        <img id="rewardAvatar" src="./reward-avatar.png" alt="专属头像">
+        <br/>
+        <button class="download-avatar" onclick="downloadAvatar()">保存头像到本地</button>
+      </div>
+      <h3 class="report-title">你的内心模式探测完整报告</h3>
+      <div id="reportContent" class="report-content"></div>
+      <button class="back-test btn-next" onclick="resetQuiz()">重新开始探测</button>
     </div>
-    <div class="report">
-      <h3>你的内心模式探测报告</h3>
-      <div id="reportContent"></div>
+  </div>
+
+  <!-- 管理员数据后台（隐藏） -->
+  <div class="admin-panel" id="adminPanel">
+    <h2>📊 全部用户作答记录（管理员专用）</h2>
+    <div id="recordList"></div>
+    <div class="admin-buttons">
+      <button class="btn-clear" onclick="clearAllRecords()">清空所有记录</button>
+      <button class="btn-close-admin" onclick="closeAdminPanel()">关闭面板</button>
     </div>
-    <button class="back-btn" onclick="resetQuiz()">重新测试</button>
   </div>
 </div>
 
 <script>
+// 完整题库（14维度）
 const questions = [
-  { q:"1.挑选随身小物件时你的倾向", opts:["A 优先实用耐用，外观过得去即可","B 优先观感审美，基础功能够用就好"] },
-  { q:"2.日常佩戴耳机更偏好", opts:["A 不封闭耳道，可以听见周遭环境声音","B 隔绝外界噪音，拥有私人听觉空间"] },
-  { q:"3.更容易被哪一类音乐触动", opts:["A 舒缓安静，氛围感强","B 节奏浓烈，情绪冲击力强","C 广为流传的大众热门曲目","D 小众冷门，受众不多的作品"] },
-  { q:"4.对待待办的事情，你更习惯", opts:["A 提前规划妥当，一切确定才安心","B 随情况调整，接纳随机的变化"] },
-  { q:"5.面临重要抉择，你的状态", opts:["A 多方权衡，会犹豫很久再定下来","B 快速做出判断，愿意承担试错结果"] },
-  { q:"6.日常社交当中你的固有模式", opts:["A 偏向被动，等待别人主动靠近","B 偏向主动，会主动发起交流"] },
-  { q:"7.他人给予反馈，更能驱动你的是", opts:["A 夸奖与正向肯定","B 指出不足的批评建议"] },
-  { q:"8.与他人产生观点分歧时", opts:["A 直接表达自身想法，不刻意迂回","B 缓和气氛，尽量避免冲突激化"] },
-  { q:"9.疲惫之后恢复精神，你更喜欢", opts:["A 安静独处，不受外界打扰","B 热闹环境，有人陪伴相处"] },
-  { q:"10.接触完全陌生的新鲜事物", opts:["A 先观察了解，再亲身尝试","B 直接上手体验，不怕出错踩坑"] },
-  { q:"11.面对许久未见、很久不联系的人突然来找你", opts:["A 会有点拘谨，慢慢找回相处节奏","B 自然熟络，很快就能恢复往日状态","C 内心会有所戒备，保持距离感"] },
-  { q:"12.陌生人主动过来和你谈论相关你的事情", opts:["A 有点不适，下意识防备","B 平常心，可以简单礼貌应付","C 乐于交谈，愿意敞开去沟通"] },
-  { q:"13.面对过往留下的遗憾", opts:["A 时常回想，容易反复纠结内耗","B 快速放下，很少回头沉浸过去"] },
-  { q:"14.计划被别人临时打乱的时候", opts:["A 会感到烦躁，不太适应变动","B 可以接受，灵活调整即可"] }
+  { dim:"物质", q:"1.挑选随身小物件时你的倾向", opts:["A 优先实用耐用，外观过得去即可","B 优先观感审美，基础功能够用就好"] },
+  { dim:"听觉", q:"2.日常佩戴耳机更偏好", opts:["A 不封闭耳道，可以听见周遭环境声音","B 隔绝外界噪音，拥有私人听觉空间"] },
+  { dim:"音乐", q:"3.更容易被哪一类音乐触动", opts:["A 舒缓安静，氛围感强","B 节奏浓烈，情绪冲击力强","C 广为流传的大众热门曲目","D 小众冷门，受众不多的作品"] },
+  { dim:"规划", q:"4.对待待办的事情，你更习惯", opts:["A 提前规划妥当，一切确定才安心","B 随情况调整，接纳随机的变化"] },
+  { dim:"决策", q:"5.面临重要抉择，你的状态", opts:["A 多方权衡，会犹豫很久再定下来","B 快速做出判断，愿意承担试错结果"] },
+  { dim:"社交", q:"6.日常社交当中你的固有模式", opts:["A 偏向被动，等待别人主动靠近","B 偏向主动，会主动发起交流"] },
+  { dim:"反馈", q:"7.他人给予反馈，更能驱动你的是", opts:["A 夸奖与正向肯定","B 指出不足的批评建议"] },
+  { dim:"冲突", q:"8.与他人产生观点分歧时", opts:["A 直接表达自身想法，不刻意迂回","B 缓和气氛，尽量避免冲突激化"] },
+  { dim:"回血", q:"9.疲惫之后恢复精神，你更喜欢", opts:["A 安静独处，不受外界打扰","B 热闹环境，有人陪伴相处"] },
+  { dim:"新鲜事物", q:"10.接触完全陌生的新鲜事物", opts:["A 先观察了解，再亲身尝试","B 直接上手体验，不怕出错踩坑"] },
+  { dim:"旧友", q:"11.面对许久未见、很久不联系的人突然来找你", opts:["A 会有点拘谨，慢慢找回相处节奏","B 自然熟络，很快就能恢复往日状态","C 内心会有所戒备，保持距离感"] },
+  { dim:"陌生人", q:"12.陌生人主动过来和你谈论相关你的事情", opts:["A 有点不适，下意识防备","B 平常心，可以简单礼貌应付","C 乐于交谈，愿意敞开去沟通"] },
+  { dim:"遗憾", q:"13.面对过往留下的遗憾", opts:["A 时常回想，容易反复纠结内耗","B 快速放下，很少回头沉浸过去"] },
+  { dim:"变动", q:"14.计划被别人临时打乱的时候", opts:["A 会感到烦躁，不太适应变动","B 可以接受，灵活调整即可"] }
 ];
-
+// 全局变量
 let currentPage = 0;
 let answers = Array(questions.length).fill(null);
+const total = questions.length;
+// DOM元素缓存
+const topProgress = document.getElementById("topProgress");
+const moonRing = document.getElementById("moonRing");
+const moonText = document.getElementById("moonText");
+const dotWrap = document.getElementById("dotWrap");
+const pageIndicator = document.getElementById("pageIndicator");
+const pageBody = document.getElementById("pageBody");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const quizBox = document.querySelector(".glass-card");
+const resultWrap = document.getElementById("resultWrap");
+const reportContent = document.getElementById("reportContent");
+const adminPanel = document.getElementById("adminPanel");
+const recordList = document.getElementById("recordList");
+const mainWrap = document.getElementById("mainWrap");
+const avatarImg = document.getElementById("rewardAvatar");
 
-const quizBox = document.getElementById('quizBox');
-const resultWrap = document.getElementById('resultWrap');
-const pageIndicator = document.getElementById('pageIndicator');
-const pageBody = document.getElementById('pageBody');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const reportContent = document.getElementById('reportContent');
-const progressBar = document.getElementById('progressBar');
-
-// 更新进度条
-function updateProgress(){
-  const percent = ((currentPage+1)/questions.length)*100;
-  progressBar.style.width = `${percent}%`;
+// ========== 管理员后台：连续点击5次入口 ==========
+let clickCount = 0;
+let clickTimer = null;
+const ADMIN_PWD = "admin123";
+mainWrap.addEventListener("click",()=>{
+  clickCount++;
+  clearTimeout(clickTimer);
+  clickTimer = setTimeout(()=>clickCount=0,1200);
+  if(clickCount >=5){
+    const pwd = prompt("输入管理员密码查看全部作答记录：");
+    if(pwd === ADMIN_PWD) openAdminPanel();
+    else if(pwd !== null) alert("密码错误，无法进入");
+    clickCount = 0;
+  }
+})
+// 本地记录存储
+function getAllRecords(){
+  const s = localStorage.getItem("quiz_records");
+  return s ? JSON.parse(s) : [];
 }
-
-// direction true=向右翻页(下一题) false=向左翻页(上一题)
-function renderPage(direction=true){
-  const item = questions[currentPage];
-  pageIndicator.innerText = `第 ${currentPage+1} / ${questions.length} 题`;
-  pageBody.innerHTML = `<div class="q-title">${item.q}</div>`;
-  item.opts.forEach((opt,oi)=>{
-    const div = document.createElement('div');
+function saveRecord(userAns, reportHtml){
+  const list = getAllRecords();
+  list.push({time:new Date().toLocaleString(), answers:[...userAns], report:reportHtml});
+  localStorage.setItem("quiz_records", JSON.stringify(list));
+}
+function renderRecords(){
+  const list = getAllRecords();
+  if(list.length ===0){recordList.innerHTML = "<p>暂无用户作答数据</p>";return;}
+  let html = "";
+  list.forEach((item,idx)=>{
+    let ansStr = "";
+    item.answers.forEach((optIdx,qIdx)=>{
+      ansStr += `${questions[qIdx].q} → ${questions[qIdx].opts[optIdx]}<br>`;
+    })
+    html += `
+    <div class="record-item">
+      <div class="record-time">第${idx+1}份 | ${item.time}</div>
+      <div>全部选择：<br>${ansStr}<hr>${item.report}</div>
+    </div>`;
+  })
+  recordList.innerHTML = html;
+}
+function openAdminPanel(){renderRecords();adminPanel.style.display="block";}
+function closeAdminPanel(){adminPanel.style.display="none";}
+function clearAllRecords(){
+  if(confirm("确定永久清空所有作答记录？不可恢复！")){
+    localStorage.removeItem("quiz_records");renderRecords();
+  }
+}
+// 头像下载功能
+function downloadAvatar(){
+  const link = document.createElement("a");
+  link.href = avatarImg.src;
+  link.download = "内心模式专属头像.png";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+// 渲染圆点进度指示器
+function renderDots(){
+  dotWrap.innerHTML = "";
+  for(let i=0;i<total;i++){
+    const dot = document.createElement("div");
+    dot.className = "dot-item";
+    if(i < currentPage) dot.classList.add("done");
+    if(i === currentPage) dot.classList.add("current");
+    dotWrap.appendChild(dot);
+  }
+}
+// 更新全部进度组件（顶部条+月相环+文字）
+function updateAllProgress(){
+  const percent = (currentPage+1)/total;
+  // 顶部渐变进度条
+  topProgress.style.transform = `scaleX(${percent})`;
+  // 月相环形进度
+  moonRing.style.background = `conic-gradient(#67e8f9 ${percent*100}%, #334155 ${percent*100}% 100%)`;
+  moonText.innerText = `${currentPage+1}/${total}`;
+  // 圆点指示器
+  renderDots();
+  pageIndicator.innerText = `第 ${currentPage+1} / ${total} 题 · ${questions[currentPage].dim}维度`;
+}
+// 渲染题目，带选项交错60ms淡入动画
+function renderPage(isForward=true){
+  const q = questions[currentPage];
+  pageBody.innerHTML = `<div class="q-title">${q.q}</div>`;
+  q.opts.forEach((opt,i)=>{
+    const div = document.createElement("div");
     div.className = "op-item";
+    div.style.animationDelay = `${i*60}ms`;
     div.innerText = opt;
-    if(answers[currentPage] === oi) div.classList.add('selected');
+    setTimeout(()=>div.classList.add("ani"),10);
+    if(answers[currentPage] === i) div.classList.add("selected");
     div.onclick = ()=>{
-      answers[currentPage] = oi;
-      renderPage(direction);
+      answers[currentPage] = i;
+      renderPage(isForward);
     }
     pageBody.appendChild(div);
   })
-  // 翻页动画
-  pageBody.className = direction ? "question-page slide-right" : "question-page slide-left";
-  updateProgress();
-
+  pageBody.className = isForward ? "slide-right" : "slide-left";
+  updateAllProgress();
   prevBtn.style.visibility = currentPage===0 ? "hidden":"visible";
   if(answers[currentPage] === null){
     nextBtn.disabled = true;
     nextBtn.innerText = "下一题";
   }else{
     nextBtn.disabled = false;
-    nextBtn.innerText = (currentPage === questions.length-1) ? "查看报告" : "下一题";
+    nextBtn.innerText = currentPage === total-1 ? "查看完整报告" : "下一题";
   }
 }
-
-prevBtn.onclick = function(){
-  if(currentPage>0){
-    currentPage--;
-    renderPage(false);
-  }
+// 翻页按钮逻辑
+prevBtn.onclick = ()=>{
+  if(currentPage>0){currentPage--;renderPage(false);}
 }
-
-nextBtn.onclick = function(){
-  if(currentPage < questions.length-1){
-    currentPage++;
-    renderPage(true);
+nextBtn.onclick = ()=>{
+  if(currentPage < total-1){
+    currentPage++;renderPage(true);
   }else{
-    generateReport();
-    quizBox.style.display = 'none';
-    resultWrap.style.display = 'block';
+    const report = generateReport();
+    quizBox.style.display = "none";
+    resultWrap.style.display = "block";
+    saveRecord(answers, report);
   }
 }
-
+// 重置测试
 function resetQuiz(){
   currentPage = 0;
-  answers = Array(questions.length).fill(null);
-  quizBox.style.display = 'block';
-  resultWrap.style.display = 'none';
+  answers = Array(total).fill(null);
+  quizBox.style.display = "block";
+  resultWrap.style.display = "none";
   renderPage(true);
 }
-
+// 生成完整多维报告 + 性格称号（深海潜行者/月光收藏家）
 function generateReport(){
   const a = answers;
-  const baseColor = a[0]===0 ? "务实型" : "感受型";
-  const materialView = a[0]===0 ? "实际使用价值" : "审美情绪体验";
-  const audioMind = a[1]===0 ? "和外界保持连通" : "拥有隔绝干扰的私人空间";
-
-  let musicText,musicInner;
-  if(a[2]===0){ musicText="舒缓安静氛围感"; musicInner="内心细腻，偏爱平和松弛的情绪"; }
-  else if(a[2]===1){ musicText="节奏浓烈冲击力强"; musicInner="情绪外放，生命力充沛"; }
-  else if(a[2]===2){ musicText="大众热门曲目"; musicInner="乐于融入群体，看重共鸣感"; }
-  else { musicText="小众冷门作品"; musicInner="追求自我独特，不喜欢随大流"; }
-
-  const planText = a[3]===0 ? "看重确定规划，讨厌突发打乱" : "接纳变数，适应随性变化";
-  const decideType = a[4]===0 ? "审慎思虑型" : "果敢行动型";
-  const socialMode = a[5]===0 ? "被动慢热，等待他人靠近" : "主动外向，愿意开启交流";
-  const feedbackText = a[6]===0 ? "正向鼓励更能带动你" : "批评建议更能促使你进步";
-  const feedbackDesc = a[6]===0 ? "更容易被夸奖滋养" : "抗压能力更强，在纠错中成长";
-  const conflictStyle = a[7]===0 ? "直率表达想法" : "倾向缓和避免冲突";
-  const recoverWay = a[8]===0 ? "独处静养恢复能量" : "陪伴社交获取能量";
-  const exploreStyle = a[9]===0 ? "先观察再动手尝试" : "直接上手不怕踩坑";
-
-  let oldFriendReact;
-  if(a[10]===0) oldFriendReact="会有些拘谨，慢慢找回相处节奏";
-  else if(a[10]===1) oldFriendReact="很快熟络，迅速找回往日状态";
-  else oldFriendReact="心存戒备，下意识保持距离";
-
-  let strangerReact,boundary;
-  if(a[11]===0){ strangerReact="感到不适，本能防备"; boundary="边界感很强"; }
-  else if(a[11]===1){ strangerReact="平常心，礼貌简单应付"; boundary="温和有分寸"; }
-  else { strangerReact="乐于敞开交谈"; boundary="开放包容"; }
-
-  const regretMind = a[12]===0 ? "容易反复回想，陷入内耗" : "可以放下过去，向前看";
-  const planBreak = a[13]===0 ? "计划被打乱会烦躁不安" : "心态灵活，可以接受变化";
-
-  let strongPoint,weakPoint;
-  if(baseColor==="务实型"){
-    strongPoint="做事脚踏实地，看重现实结果，为人靠谱稳重";
-    weakPoint="偶尔容易忽略情绪感受，行事略显刻板";
+  // 基础性格底色
+  const base = a[0]===0 ? "务实型" : "感受型";
+  const title = base === "务实型" ? "深海潜行者" : "月光收藏家";
+  let tagList = [];
+  // 各维度文字逻辑
+  let material = a[0]===0 ? "更看重实用价值，理性优先" : "更在意审美与情绪氛围感";
+  let audio = a[1]===0 ? "习惯和外界保持连通，不喜欢完全隔绝" : "偏爱拥有独处私密听觉空间";
+  let musicDesc;
+  if(a[2]===0){musicDesc="偏爱舒缓氛围感音乐";tagList.push("松弛感");}
+  else if(a[2]===1){musicDesc="钟情浓烈有冲击力的曲风";tagList.push("情绪外放");}
+  else if(a[2]===2){musicDesc="喜欢大众共鸣强的热门歌曲";tagList.push("合群共情");}
+  else{musicDesc="偏爱小众冷门独立音乐";tagList.push("独特审美");}
+  let plan = a[3]===0 ? "凡事提前规划，讨厌突发变动" : "接纳变数，擅长灵活调整";
+  let decide = a[4]===0 ? "审慎深思，反复权衡再决定" : "果敢利落，愿意试错";
+  let social = a[5]===0 ? "慢热被动，等待他人主动" : "外向主动，擅长开启交流";
+  let feedback = a[6]===0 ? "正向夸奖更能激励你" : "批评建议更利于成长";
+  let conflict = a[7]===0 ? "直率直白，不刻意回避分歧" : "温和包容，优先避免冲突";
+  let recover = a[8]===0 ? "独处充电，安静恢复精力" : "靠陪伴社交回血";
+  let explore = a[9]===0 ? "先观察再尝试，谨慎稳妥" : "直接上手，不惧踩坑";
+  let oldFriend;
+  if(a[10]===0){oldFriend="久未联系的熟人会拘谨慢热";tagList.push("慢热");}
+  else if(a[10]===1){oldFriend="老友重逢迅速熟络";tagList.push("自来熟");}
+  else{oldFriend="对许久未见的人存有戒备";tagList.push("边界感");}
+  let stranger;
+  if(a[11]===0){stranger="陌生人搭话本能防备";tagList.push("高边界");}
+  else if(a[11]===1){stranger="礼貌应付，保持分寸";tagList.push("温和克制");}
+  else{stranger="乐于和陌生人深度交流";tagList.push("开放包容");}
+  let regret = a[12]===0 ? "容易纠结过往，容易内耗" : "放下遗憾，向前看";
+  let change = a[13]===0 ? "计划打乱容易烦躁不安" : "变动中适应力强";
+  // 优缺点
+  let strong,weak;
+  if(base==="务实型"){
+    strong="踏实靠谱，目标清晰，落地执行力强，遇事稳重";
+    weak="容易忽略情绪感受，偶尔略显刻板不懂变通";
   }else{
-    strongPoint="感知力丰富，共情能力出色，注重内心体验";
-    weakPoint="容易被情绪左右想法，偶尔会理想化";
+    strong="共情力极强，感知细腻，想象力丰富，温柔包容";
+    weak="容易被情绪裹挟，做事容易理想化，缺乏规划";
   }
-
+  // 拼接标签HTML
+  let tagHtml = "";
+  tagList.forEach(t=>tagHtml += `<span class="report-tag">${t}</span>`);
   const html = `
-<p>结合你的选择，你的性格底色偏向<strong>${baseColor}</strong>。</p>
-<p>看待事物更看重<strong>${materialView}</strong>；在环境上，你向往<strong>${audioMind}</strong>。</p>
-<p>音乐审美上偏爱${musicText}，这反映你${musicInner}。</p>
-<p>生活习惯上，${planText}；做决定属于<strong>${decideType}</strong>。</p>
-<p>社交模式：${socialMode}。接收反馈时，${feedbackText}，代表你${feedbackDesc}。</p>
-<p>发生分歧时，你习惯${conflictStyle}；疲惫时依靠${recoverWay}回血。</p>
-<p>面对新事物，你习惯${exploreStyle}。</p>
-<p>许久不联系的人突然找你，${oldFriendReact}；面对陌生人搭话，${strangerReact}，属于${boundary}的人。</p>
-<p>对于遗憾：${regretMind}；遭遇计划变更：${planBreak}。</p>
+<div class="character-title">你的性格底色：${base} · 专属称号：${title}</div>
+<div>${tagHtml}</div>
+<p>【物质视角】${material}</p>
+<p>【听觉习惯】${audio}</p>
+<p>【音乐偏好】${musicDesc}</p>
+<p>【生活节奏】${plan}；【决策风格】${decide}</p>
+<p>【社交模式】${social}；【反馈偏好】${feedback}</p>
+<p>【分歧处理】${conflict}；【能量恢复】${recover}</p>
+<p>【探索方式】${explore}</p>
+<p>【旧友相处】${oldFriend}；【陌生人态度】${stranger}</p>
+<p>【遗憾心态】${regret}；【突发变动】${change}</p>
 <br/>
-<p>✅你的突出优势：${strongPoint}</p>
-<p>⚠️可以留意的小短板：${weakPoint}</p>
-  `;
+<p><strong>✅你的核心优势：</strong>${strong}</p>
+<p><strong>⚠️可以慢慢调整的小特质：</strong>${weak}</p>
+`;
   reportContent.innerHTML = html;
+  return html;
 }
-
+// 页面初始化
 renderPage(true);
 </script>
 </body>
